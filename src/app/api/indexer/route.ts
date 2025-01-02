@@ -13,7 +13,6 @@ export async function GET() {
   const texts = await splitter.splitDocuments([document1, document2]);
 
   const vectorStore = await getPineconeVectorStore({
-    apiKey: process.env.PINECONE_API_KEY,
     embeddings: new OpenAIEmbeddings({ model: "text-embedding-3-large" }),
     indexName: process.env.PINECONE_INDEX!,
   });

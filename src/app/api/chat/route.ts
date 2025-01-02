@@ -38,7 +38,6 @@ export async function POST(req: NextRequest) {
   const chain = prompt.pipe(llm);
 
   const vectorStore = await getPineconeVectorStore({
-    apiKey: process.env.PINECONE_API_KEY,
     embeddings: new OpenAIEmbeddings({ model: "text-embedding-3-large" }),
     indexName: process.env.PINECONE_INDEX!,
   });
@@ -50,7 +49,6 @@ export async function POST(req: NextRequest) {
   // const message = await chain.invoke({ context, summary, question });
   const message = await chain.invoke({ context, question });
   const audio = await generateSpeechFromText({
-    apiKey: process.env.ELEVENLABS_API_KEY!,
     text: message.content as string,
   });
 

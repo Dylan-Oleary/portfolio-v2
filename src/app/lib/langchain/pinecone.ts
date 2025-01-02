@@ -3,17 +3,17 @@ import { PineconeStore } from "@langchain/pinecone";
 import { Pinecone } from "@pinecone-database/pinecone";
 
 export type GetPineconeVectorStoreOpts = {
-  apiKey: string;
   embeddings: EmbeddingsInterface;
   indexName: string;
 };
 
 export async function getPineconeVectorStore({
-  apiKey,
   embeddings,
   indexName,
 }: GetPineconeVectorStoreOpts): Promise<PineconeStore> {
-  return new PineconeStore(embeddings, {
-    pineconeIndex: await new Pinecone({ apiKey }).Index(indexName),
-  });
+  const pineconeIndex = await new Pinecone({
+    apiKey: process.env.PINECONE_API_KEY,
+  }).Index(indexName);
+
+  return new PineconeStore(embeddings, { pineconeIndex });
 }

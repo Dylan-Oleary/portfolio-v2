@@ -1,15 +1,15 @@
 import { ElevenLabsClient } from "elevenlabs";
 
 export type GenerateSpeechFromTextOpts = {
-  apiKey: string;
   text: string;
 };
 
 export async function generateSpeechFromText({
-  apiKey,
   text,
 }: GenerateSpeechFromTextOpts) {
-  const client = new ElevenLabsClient({ apiKey });
+  const client = new ElevenLabsClient({
+    apiKey: process.env.ELEVENLABS_API_KEY,
+  });
 
   return client.textToSpeech.convert("JBFqnCBsd6RMkjVDRZzb", {
     model_id: "eleven_flash_v2",
