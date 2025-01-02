@@ -5,6 +5,7 @@ import {
 } from "@langchain/core/prompts";
 import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
 import { NextRequest, NextResponse } from "next/server";
+import { generateSpeechFromText } from "~/app/lib";
 import { getPineconeVectorStore } from "~/app/lib/langchain";
 
 // import testChatHistory from "./_test-chat-history.json";
@@ -46,8 +47,12 @@ export async function POST(req: NextRequest) {
   const retriever = vectorStore.asRetriever();
   const context = await retriever.invoke(question);
 
-  //   const message = await chain.invoke({ context, summary, question });
+  // const message = await chain.invoke({ context, summary, question });
   const message = await chain.invoke({ context, question });
+  const audio = await generateSpeechFromText({
+    apiKey: process.env.ELEVENLABS_API_KEY!,
+    text: message.content as string,
+  });
 
-  return NextResponse.json({ message: message.content });
+  return NextResponse.json({ audio, message: message.content });
 }
