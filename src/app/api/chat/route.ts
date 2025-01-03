@@ -4,8 +4,9 @@ import {
   SystemMessagePromptTemplate,
 } from "@langchain/core/prompts";
 import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
+// import { createWriteStream } from "fs";
 import { NextRequest, NextResponse } from "next/server";
-import { generateSpeechFromText } from "~/app/lib";
+// import { generateSpeechFromText } from "~/app/lib";
 import { getPineconeVectorStore } from "~/app/lib/langchain";
 
 // import testChatHistory from "./_test-chat-history.json";
@@ -48,9 +49,12 @@ export async function POST(req: NextRequest) {
 
   // const message = await chain.invoke({ context, summary, question });
   const message = await chain.invoke({ context, question });
-  const audio = await generateSpeechFromText({
-    text: message.content as string,
-  });
+  //   const audio = await generateSpeechFromText({
+  //     text: message.content as string,
+  //   });
+  //   const writeStream = createWriteStream("audio.mp3");
 
-  return NextResponse.json({ audio, message: message.content });
+  //   await audio.pipe(writeStream);
+
+  return NextResponse.json({ message: message.content });
 }
