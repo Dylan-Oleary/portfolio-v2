@@ -1,8 +1,8 @@
-import { ElevenLabsClient } from "elevenlabs";
 import { createReadStream } from "fs";
 import path from "path";
 
 import { ElevenLabsAudioOutputFormat } from "./types";
+import { getElevenLabsClient } from "./client";
 
 export type GenerateSpeechStreamFromTextOpts = {
   modelId?: string;
@@ -23,9 +23,7 @@ export async function generateSpeechStreamFromText({
     );
   }
 
-  return new ElevenLabsClient({
-    apiKey: process.env.ELEVENLABS_API_KEY,
-  }).textToSpeech.convertAsStream(voiceId, {
+  return getElevenLabsClient().textToSpeech.convertAsStream(voiceId, {
     model_id: modelId,
     output_format: outputFormat,
     text,
