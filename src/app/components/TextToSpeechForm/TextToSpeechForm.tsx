@@ -14,7 +14,7 @@ export function TextToSpeechForm() {
 
     setQuestion("");
 
-    const response = await fetch("/api/chat", {
+    const response = await fetch("/api/tts", {
       body: JSON.stringify({ question }),
       method: "POST",
     });

@@ -9,11 +9,18 @@ import type { NextRequest } from "next/server";
 import { generateSpeechStreamFromText } from "~/app/lib";
 import { getPineconeVectorStore } from "~/app/lib/langchain";
 
-// import testChatHistory from "./_test-chat-history.json";
+// import testChatHistory from "~/server/_resources/_mock-chat-history.json";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const llm = new ChatOpenAI({ model: "gpt-4o-mini", temperature: 0.1 });
+  const question = body.question;
+  const tts = body.tts ?? false;
+
+  const llm = new ChatOpenAI({
+    model: "gpt-4o-mini",
+    temperature: 0.1,
+    streaming: tts,
+  });
 
   //   const summaryPrompt = ChatPromptTemplate.fromMessages([
   //     SystemMessagePromptTemplate.fromTemplate(
@@ -43,7 +50,6 @@ export async function POST(req: NextRequest) {
     indexName: process.env.PINECONE_INDEX!,
   });
 
-  const question = body.question;
   const retriever = vectorStore.asRetriever({ k: 5 });
   const context = await retriever.invoke(question);
 
