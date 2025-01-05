@@ -8,12 +8,16 @@ export type UseAudioStreamReturn = {
 
 export function useAudioStream(): UseAudioStreamReturn {
   const audioContext = useRef<AudioContext>(
-    new (window.AudioContext || window.webkitAudioContext)()
+    typeof window !== "undefined"
+      ? new (window.AudioContext || window.webkitAudioContext)()
+      : null
   );
 
   const streamAudio = async (
     stream: ReadableStream<Uint8Array<ArrayBufferLike>>
   ): Promise<void> => {
+    if (!audioContext.current) return;
+
     const reader = stream.getReader();
 
     if (!reader) {
