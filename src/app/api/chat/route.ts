@@ -4,16 +4,16 @@ import {
   SystemMessagePromptTemplate,
 } from "@langchain/core/prompts";
 import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
-// import { createWriteStream } from "fs";
-import { NextRequest, NextResponse } from "next/server";
-// import { generateSpeechFromText } from "~/app/lib";
+import type { NextRequest } from "next/server";
+
+import { generateSpeechStreamFromText } from "~/app/lib";
 import { getPineconeVectorStore } from "~/app/lib/langchain";
 
 // import testChatHistory from "./_test-chat-history.json";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const llm = new ChatOpenAI({ model: "gpt-4o-mini", temperature: 0.25 });
+  const llm = new ChatOpenAI({ model: "gpt-4o-mini", temperature: 0.1 });
 
   //   const summaryPrompt = ChatPromptTemplate.fromMessages([
   //     SystemMessagePromptTemplate.fromTemplate(
@@ -27,10 +27,10 @@ export async function POST(req: NextRequest) {
 
   const prompt = ChatPromptTemplate.fromMessages([
     SystemMessagePromptTemplate.fromTemplate(
-      `You are to answer questions as a person named Dylan. 
-       Assume you are being interviewed for a job and answer the questions courteously and professionally. 
-       Your knowledge is limited only to the context provided. 
-       Do not become creative or make up anything.`
+      `You are to answer questions as a person named Dylan.
+         Assume you are being interviewed for a job and answer the questions bluntly.
+         Your knowledge is limited only to the context provided.
+         Do not be overly verbose or overly creative.`
     ),
     SystemMessagePromptTemplate.fromTemplate("Context: {context}"),
     // SystemMessagePromptTemplate.fromTemplate("Conversation Summary: {summary}"),
@@ -44,17 +44,37 @@ export async function POST(req: NextRequest) {
   });
 
   const question = body.question;
-  const retriever = vectorStore.asRetriever();
+  const retriever = vectorStore.asRetriever({ k: 5 });
   const context = await retriever.invoke(question);
 
   // const message = await chain.invoke({ context, summary, question });
   const message = await chain.invoke({ context, question });
-  //   const audio = await generateSpeechFromText({
-  //     text: message.content as string,
-  //   });
-  //   const writeStream = createWriteStream("audio.mp3");
 
-  //   await audio.pipe(writeStream);
+  return new Response(
+    new ReadableStream({
+      async start(controller) {
+        try {
+          const audio = await generateSpeechStreamFromText({
+            text: message.content as string,
+          });
 
-  return NextResponse.json({ message: message.content });
+          // Read the audio stream and enqueue chunks
+          for await (const chunk of audio) {
+            controller.enqueue(chunk);
+          }
+        } catch (error) {
+          controller.error(error);
+        } finally {
+          controller.close();
+        }
+      },
+    }),
+    {
+      headers: new Headers({
+        "Content-Type": "audio/mpeg",
+        "Cache-Control": "no-cache",
+        Connection: "keep-alive",
+      }),
+    }
+  );
 }
