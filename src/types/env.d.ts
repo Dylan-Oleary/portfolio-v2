@@ -9,3 +9,7 @@ declare namespace NodeJS {
     PINECONE_INDEX_NAME: string;
   }
 }
+
+declare interface Window {
+  webkitAudioContext: typeof AudioContext;
+}

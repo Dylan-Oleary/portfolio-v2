@@ -58,10 +58,7 @@ export async function POST(req: NextRequest) {
             text: message.content as string,
           });
 
-          // Read the audio stream and enqueue chunks
-          for await (const chunk of audio) {
-            controller.enqueue(chunk);
-          }
+          for await (const chunk of audio) controller.enqueue(chunk);
         } catch (error) {
           controller.error(error);
         } finally {
