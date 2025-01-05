@@ -7,8 +7,8 @@ import { getPineconeVectorStore } from "~/app/lib/langchain";
 
 export async function GET() {
   const splitter = new RecursiveCharacterTextSplitter({
-    chunkSize: 50,
-    chunkOverlap: 1,
+    chunkSize: 1000,
+    chunkOverlap: 100,
   });
   const texts = await splitter.splitDocuments([document1, document2]);
 
