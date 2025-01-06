@@ -4,6 +4,7 @@ import {
   SystemMessagePromptTemplate,
 } from "@langchain/core/prompts";
 import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
+import { randomUUID } from "crypto";
 import type { NextRequest } from "next/server";
 import { getPineconeVectorStore } from "~/app/lib";
 
@@ -39,8 +40,18 @@ export async function POST(req: NextRequest) {
     new ReadableStream({
       async start(controller) {
         try {
+          controller.enqueue(
+            JSON.stringify({
+              id: randomUUID(),
+              role: "assistant",
+              type: "metadata",
+            }) + "\n"
+          );
+
           for await (const chunk of message) {
-            controller.enqueue(chunk.content);
+            controller.enqueue(
+              JSON.stringify({ type: "message", message: chunk.content }) + "\n"
+            );
           }
         } catch (error) {
           controller.error(error);
@@ -51,7 +62,7 @@ export async function POST(req: NextRequest) {
     }),
     {
       headers: new Headers({
-        "Content-Type": "text/plain",
+        "Content-Type": "application/json",
         "Cache-Control": "no-cache, no-transform",
         Connection: "keep-alive",
       }),
