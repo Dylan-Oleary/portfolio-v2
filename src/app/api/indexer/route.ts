@@ -2,8 +2,9 @@ import { OpenAIEmbeddings } from "@langchain/openai";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { NextResponse } from "next/server";
 
+import { getPineconeVectorStore } from "~/lib/langchain";
+
 import { document1, document2 } from "./_test-documents";
-import { getPineconeVectorStore } from "~/app/lib/langchain";
 
 export async function GET() {
   const splitter = new RecursiveCharacterTextSplitter({

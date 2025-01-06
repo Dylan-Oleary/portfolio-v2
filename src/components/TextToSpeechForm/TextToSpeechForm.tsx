@@ -1,8 +1,8 @@
 "use client";
 
-import { type FormEvent, useState } from "react";
+import { useState, type FormEvent } from "react";
 
-import { useAudioStream } from "~/app/hooks";
+import { useAudioStream } from "~/hooks";
 
 export function TextToSpeechForm() {
   const { streamAudio } = useAudioStream();

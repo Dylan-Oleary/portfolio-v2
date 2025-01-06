@@ -1,4 +1,4 @@
-import { ChatSession } from "../components/ChatSession";
+import { ChatSession } from "../../components/ChatSession";
 
 export default function ChatPage() {
   return (

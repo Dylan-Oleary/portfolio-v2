@@ -6,8 +6,8 @@ import {
 import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
 import type { NextRequest } from "next/server";
 
-import { generateSpeechStreamFromText } from "~/app/lib";
-import { getPineconeVectorStore } from "~/app/lib/langchain";
+import { generateSpeechStreamFromText } from "~/lib";
+import { getPineconeVectorStore } from "~/lib/langchain";
 
 // import testChatHistory from "~/server/_resources/_mock-chat-history.json";
 

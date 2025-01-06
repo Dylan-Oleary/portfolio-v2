@@ -1,6 +1,6 @@
 "use client";
 
-import { useChat } from "~/app/hooks";
+import { useChat } from "~/hooks";
 
 export function ChatSession() {
   const { input, messages, onSubmit, setInput } = useChat();

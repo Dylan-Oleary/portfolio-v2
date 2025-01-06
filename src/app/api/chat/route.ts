@@ -6,7 +6,8 @@ import {
 import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
 import { randomUUID } from "crypto";
 import type { NextRequest } from "next/server";
-import { getPineconeVectorStore } from "~/app/lib";
+
+import { getPineconeVectorStore } from "~/lib";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();

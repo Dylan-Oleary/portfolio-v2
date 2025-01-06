@@ -1,8 +1,8 @@
 import { createReadStream } from "fs";
 import path from "path";
 
-import { ElevenLabsAudioOutputFormat } from "./types";
 import { getElevenLabsClient } from "./client";
+import { ElevenLabsAudioOutputFormat } from "./types";
 
 export type GenerateSpeechStreamFromTextOpts = {
   modelId?: string;
