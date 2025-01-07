@@ -1,8 +1,8 @@
-import { createReadStream } from "fs";
-import path from "path";
+import { createReadStream } from 'fs';
+import path from 'path';
 
-import { getElevenLabsClient } from "./client";
-import { ElevenLabsAudioOutputFormat } from "./types";
+import { getElevenLabsClient } from './client';
+import { ElevenLabsAudioOutputFormat } from './types';
 
 export type GenerateSpeechStreamFromTextOpts = {
   modelId?: string;
@@ -12,14 +12,14 @@ export type GenerateSpeechStreamFromTextOpts = {
 };
 
 export async function generateSpeechStreamFromText({
-  modelId = "eleven_flash_v2",
+  modelId = 'eleven_flash_v2',
   outputFormat = ElevenLabsAudioOutputFormat.MP3_22050_32,
   text,
-  voiceId = "JBFqnCBsd6RMkjVDRZzb",
+  voiceId = 'JBFqnCBsd6RMkjVDRZzb',
 }: GenerateSpeechStreamFromTextOpts) {
-  if (process.env.FEATURE_ENABLE_ELEVENLABS_API !== "1") {
+  if (process.env.FEATURE_ENABLE_ELEVENLABS_API !== '1') {
     return createReadStream(
-      path.join(process.cwd(), "/src/server/_resources/_mock-tts-response.mp3")
+      path.join(process.cwd(), '/src/server/_resources/_mock-tts-response.mp3'),
     );
   }
 

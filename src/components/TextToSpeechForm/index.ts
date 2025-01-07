@@ -1,1 +1,1 @@
-export * from "./TextToSpeechForm";
+export * from './TextToSpeechForm';

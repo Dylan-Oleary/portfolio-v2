@@ -1,1 +1,1 @@
-export * from "./pinecone";
+export * from './pinecone';

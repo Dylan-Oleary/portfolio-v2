@@ -1,6 +1,6 @@
-import type { EmbeddingsInterface } from "@langchain/core/embeddings";
-import { PineconeStore } from "@langchain/pinecone";
-import { Pinecone } from "@pinecone-database/pinecone";
+import type { EmbeddingsInterface } from '@langchain/core/embeddings';
+import { PineconeStore } from '@langchain/pinecone';
+import { Pinecone } from '@pinecone-database/pinecone';
 
 export type GetPineconeVectorStoreOpts = {
   embeddings: EmbeddingsInterface;

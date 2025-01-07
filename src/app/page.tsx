@@ -1,4 +1,4 @@
-import { TextToSpeechForm } from "../components";
+import { TextToSpeechForm } from '../components';
 
 export default function Home() {
   return (

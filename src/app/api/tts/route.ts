@@ -2,12 +2,12 @@ import {
   ChatPromptTemplate,
   HumanMessagePromptTemplate,
   SystemMessagePromptTemplate,
-} from "@langchain/core/prompts";
-import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
-import type { NextRequest } from "next/server";
+} from '@langchain/core/prompts';
+import { ChatOpenAI, OpenAIEmbeddings } from '@langchain/openai';
+import type { NextRequest } from 'next/server';
 
-import { generateSpeechStreamFromText } from "~/lib";
-import { getPineconeVectorStore } from "~/lib/langchain";
+import { generateSpeechStreamFromText } from '~/lib';
+import { getPineconeVectorStore } from '~/lib/langchain';
 
 // import testChatHistory from "~/server/_resources/_mock-chat-history.json";
 
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
   const tts = body.tts ?? false;
 
   const llm = new ChatOpenAI({
-    model: "gpt-4o-mini",
+    model: 'gpt-4o-mini',
     temperature: 0.1,
     streaming: tts,
   });
@@ -37,16 +37,16 @@ export async function POST(req: NextRequest) {
       `You are to answer questions as a person named Dylan.
          Assume you are being interviewed for a job and answer the questions bluntly.
          Your knowledge is limited only to the context provided.
-         Do not be overly verbose or overly creative.`
+         Do not be overly verbose or overly creative.`,
     ),
-    SystemMessagePromptTemplate.fromTemplate("Context: {context}"),
+    SystemMessagePromptTemplate.fromTemplate('Context: {context}'),
     // SystemMessagePromptTemplate.fromTemplate("Conversation Summary: {summary}"),
-    HumanMessagePromptTemplate.fromTemplate("{question}"),
+    HumanMessagePromptTemplate.fromTemplate('{question}'),
   ]);
   const chain = prompt.pipe(llm);
 
   const vectorStore = await getPineconeVectorStore({
-    embeddings: new OpenAIEmbeddings({ model: "text-embedding-3-large" }),
+    embeddings: new OpenAIEmbeddings({ model: 'text-embedding-3-large' }),
     indexName: process.env.PINECONE_INDEX!,
   });
 
@@ -74,10 +74,10 @@ export async function POST(req: NextRequest) {
     }),
     {
       headers: new Headers({
-        "Content-Type": "audio/mpeg",
-        "Cache-Control": "no-cache",
-        Connection: "keep-alive",
+        'Content-Type': 'audio/mpeg',
+        'Cache-Control': 'no-cache',
+        Connection: 'keep-alive',
       }),
-    }
+    },
   );
 }

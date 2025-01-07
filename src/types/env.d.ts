@@ -1,4 +1,4 @@
-declare module "*.mp3";
+declare module '*.mp3';
 
 declare namespace NodeJS {
   interface ProcessEnv {

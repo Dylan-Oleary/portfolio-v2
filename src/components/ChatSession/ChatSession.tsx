@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useChat } from "~/hooks";
+import { useChat } from '~/hooks';
 
 export function ChatSession() {
   const { input, messages, onSubmit, setInput } = useChat();
@@ -9,10 +9,7 @@ export function ChatSession() {
     <div className="w-full flex-grow flex flex-col">
       <div className="flex-grow">
         {messages.map(({ id, role, message }) => (
-          <div
-            key={id}
-            className={`${role === "user" ? "text-end p-8" : "p-8"}`}
-          >
+          <div key={id} className={`${role === 'user' ? 'text-end p-8' : 'p-8'}`}>
             <div className="text-blue-300 mb-8">{role}</div>
             <div>{message}</div>
           </div>
