@@ -85,6 +85,23 @@ export function useChat(): UseChatReturn {
       isReaderFinished = done;
       setMessages([...updatedMessages, newMessage]);
     }
+
+    // Process remaining buffer after the loop
+    if (buffer.trim()) {
+      try {
+        const json = JSON.parse(buffer);
+
+        if (json.type === 'metadata') {
+          newMessage = { ...newMessage, id: json.id, role: json.role };
+        } else if (json.type === 'message') {
+          newMessage.message += json.message;
+        }
+
+        setMessages([...updatedMessages, newMessage]);
+      } catch (error) {
+        console.error('Failed to parse remaining buffer:', buffer, error);
+      }
+    }
   };
 
   return { input, messages, onSubmit, setInput };
