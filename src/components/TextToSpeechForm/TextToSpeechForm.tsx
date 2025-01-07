@@ -1,26 +1,26 @@
-"use client";
+'use client';
 
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useState } from 'react';
 
-import { useAudioStream } from "~/app/hooks";
+import { useAudioStream } from '~/hooks';
 
 export function TextToSpeechForm() {
   const { streamAudio } = useAudioStream();
-  const [question, setQuestion] = useState<string>("");
+  const [question, setQuestion] = useState<string>('');
 
   const onSubmit = async (event: FormEvent) => {
     event?.preventDefault();
     event?.stopPropagation();
 
-    setQuestion("");
+    setQuestion('');
 
-    const response = await fetch("/api/chat", {
+    const response = await fetch('/api/tts', {
       body: JSON.stringify({ question }),
-      method: "POST",
+      method: 'POST',
     });
 
     if (!response.ok) {
-      console.error("Failed to fetch");
+      console.error('Failed to fetch');
       return;
     }
 

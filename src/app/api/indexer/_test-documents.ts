@@ -1,4 +1,4 @@
-import type { Document } from "@langchain/core/documents";
+import type { Document } from '@langchain/core/documents';
 
 export const document1: Document = {
   pageContent: `
@@ -8,7 +8,7 @@ export const document1: Document = {
     - 1.5 years as a Software Engineer at 44 North Digital Marketing
     - 2 years as a Software Engineer at Zinnia
     `,
-  metadata: { name: "Work Experience" },
+  metadata: { name: 'Work Experience' },
 };
 
 export const document2: Document = {
@@ -17,5 +17,5 @@ export const document2: Document = {
 
     - Interest in only one thing – yogurt chips
     `,
-  metadata: { name: "Interests" },
+  metadata: { name: 'Interests' },
 };
