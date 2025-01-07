@@ -17,7 +17,6 @@ const eslintConfig = [
         {
           alphabetize: { order: 'asc', caseInsensitive: true },
           groups: [['builtin', 'external'], 'internal', 'parent', 'sibling', 'index'],
-          named: { enabled: true, types: 'types-last' },
           'newlines-between': 'always',
         },
       ],
