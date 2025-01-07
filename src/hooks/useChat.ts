@@ -86,7 +86,7 @@ export function useChat(): UseChatReturn {
       setMessages([...updatedMessages, newMessage]);
     }
 
-    // Process remaining buffer after the loop
+    // Step 6: Process remaining buffer after the reader is closed
     if (buffer.trim()) {
       try {
         const json = JSON.parse(buffer);
