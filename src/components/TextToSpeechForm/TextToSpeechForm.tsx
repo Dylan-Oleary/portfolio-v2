@@ -2,33 +2,23 @@
 
 import { type FormEvent, useState } from 'react';
 
-import { useAudioStream } from '~/hooks';
+export type TextToSpeechFormProps = {
+  onSubmit: (value: string) => void;
+};
 
-export function TextToSpeechForm() {
-  const { streamAudio } = useAudioStream();
+export function TextToSpeechForm(props: TextToSpeechFormProps) {
   const [question, setQuestion] = useState<string>('');
 
-  const onSubmit = async (event: FormEvent) => {
+  const onFormSubmit = async (event: FormEvent) => {
     event?.preventDefault();
     event?.stopPropagation();
 
     setQuestion('');
-
-    const response = await fetch('/api/tts', {
-      body: JSON.stringify({ question }),
-      method: 'POST',
-    });
-
-    if (!response.ok) {
-      console.error('Failed to fetch');
-      return;
-    }
-
-    streamAudio(response.body!);
+    props.onSubmit(question);
   };
 
   return (
-    <form className="w-[450px] mt-8" onSubmit={onSubmit}>
+    <form className="w-[450px] mt-8" onSubmit={onFormSubmit}>
       <input
         className="text-black p-4 w-full"
         name="question"
