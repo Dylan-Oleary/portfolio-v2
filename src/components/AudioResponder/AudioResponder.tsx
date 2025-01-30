@@ -4,11 +4,11 @@ import { ReactElement } from 'react';
 
 import { useAudioStream } from '~/hooks';
 
-import { AudioVisualizer } from '../AudioVisualizer';
+import { AudioResponderV2 } from '../AudioResponderV2';
 import { TextToSpeechForm } from '../TextToSpeechForm';
 
 export function AudioResponder(): ReactElement {
-  const { analyserNode, streamAudio } = useAudioStream();
+  const { streamAudio } = useAudioStream();
 
   const onFormSubmit = async (question: string) => {
     const response = await fetch('/api/tts', {
@@ -26,9 +26,7 @@ export function AudioResponder(): ReactElement {
 
   return (
     <div className="flex flex-col flex-grow">
-      <div className="p-4">
-        <AudioVisualizer analyserNode={analyserNode} />
-      </div>
+      <AudioResponderV2 />
       <div className="mt-auto">
         <TextToSpeechForm onSubmit={onFormSubmit} />
       </div>
