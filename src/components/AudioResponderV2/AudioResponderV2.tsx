@@ -30,20 +30,23 @@ export function AudioResponderV2(): ReactElement {
   const mountRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (!window) return;
+
     const root = mountRef.current;
     if (!root) return;
 
     const renderer = new WebGLRenderer({ antialias: true });
-    renderer.setSize(root.clientHeight, root.clientWidth);
+    renderer.setSize(window.innerHeight, window.innerWidth);
     renderer.setClearColor('#0A0A0A');
     root.appendChild(renderer.domElement);
 
     const scene = new Scene();
-    const camera = new PerspectiveCamera(45, root.clientWidth / root.clientHeight, 0.1, 1000);
+    const camera = new PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
     const orbit = new OrbitControls(camera, renderer.domElement);
 
     camera.position.set(6, 8, 14);
     orbit.update();
+    orbit.enableZoom = false;
 
     const uniforms = { u_time: { value: 0.0 } };
     const material = new ShaderMaterial({
@@ -54,6 +57,8 @@ export function AudioResponderV2(): ReactElement {
     });
     const geometry = new IcosahedronGeometry(4, 30);
     const mesh = new Mesh(geometry, material);
+    scene.add(mesh);
+
     const clock = new Clock();
 
     function animate() {
@@ -62,13 +67,10 @@ export function AudioResponderV2(): ReactElement {
     }
 
     renderer.setAnimationLoop(animate);
-
-    scene.add(mesh);
-
     return () => {
       root.removeChild(renderer.domElement);
     };
   }, []);
 
-  return <div ref={mountRef} className="w-full h-full flex-grow" />;
+  return <div ref={mountRef} className="w-full flex-grow" />;
 }
