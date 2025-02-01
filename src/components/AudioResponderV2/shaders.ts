@@ -133,9 +133,8 @@ export const vertexShader = `
   uniform float u_time;
 
   void main() {
-    float noise = 2. * pnoise(position + u_time, vec3(10.));
+    float noise = 3. * pnoise(position + u_time, vec3(10.));
     float displacement = (u_frequency / 30.) * (noise / 10.);
-
     vec3 newPosition = position + normal * displacement;
 
     gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);

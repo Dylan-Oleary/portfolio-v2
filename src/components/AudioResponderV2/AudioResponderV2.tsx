@@ -6,7 +6,6 @@ import {
   Audio,
   AudioAnalyser,
   AudioListener,
-  AudioLoader,
   Clock,
   IcosahedronGeometry,
   Mesh,
@@ -25,8 +24,13 @@ import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPa
 
 import { fragmentShader, vertexShader } from './shaders';
 
-export function AudioResponderV2(): ReactElement {
+export type AudioRepsonderV2Props = {
+  buffer?: AudioBuffer;
+};
+
+export function AudioResponderV2({ buffer }: AudioRepsonderV2Props): ReactElement {
   const mountRef = useRef<HTMLDivElement>(null);
+  const soundRef = useRef<Audio>(null);
 
   useEffect(() => {
     if (!window) return;
@@ -94,60 +98,36 @@ export function AudioResponderV2(): ReactElement {
     const audioListener = new AudioListener();
     camera.add(audioListener);
 
-    const sound = new Audio(audioListener);
+    soundRef.current = new Audio(audioListener);
 
-    const audioLoader = new AudioLoader();
-    audioLoader.load('/_mock-tts-response.mp3', function (buffer) {
-      sound.setBuffer(buffer);
-      window.addEventListener('click', function () {
-        sound.play();
-      });
-    });
-
-    const audioAnalyser = new AudioAnalyser(sound, 32);
+    const audioAnalyser = new AudioAnalyser(soundRef.current, 32);
 
     const orbit = new OrbitControls(camera, renderer.domElement);
 
     orbit.update();
-    orbit.enableZoom = true;
+    orbit.enableZoom = false;
 
     const clock = new Clock();
 
-    const gui = new GUI();
+    if (process.env.NEXT_PUBLIC_FEATURE_ENABLE_BLOB_GUI === '1') {
+      const gui = new GUI();
 
-    const colorsFolder = gui.addFolder('Colors');
-    colorsFolder.add(params, 'red', 0, 1).onChange((value: string) => {
-      uniforms.u_red.value = Number(value);
-    });
-    colorsFolder.add(params, 'green', 0, 1).onChange((value: string) => {
-      uniforms.u_green.value = Number(value);
-    });
-    colorsFolder.add(params, 'blue', 0, 1).onChange((value: string) => {
-      uniforms.u_blue.value = Number(value);
-    });
+      const colorsFolder = gui.addFolder('Colors');
+      colorsFolder.add(params, 'red', 0, 1).onChange((value: string) => {
+        uniforms.u_red.value = Number(value);
+      });
+      colorsFolder.add(params, 'green', 0, 1).onChange((value: string) => {
+        uniforms.u_green.value = Number(value);
+      });
+      colorsFolder.add(params, 'blue', 0, 1).onChange((value: string) => {
+        uniforms.u_blue.value = Number(value);
+      });
+    }
 
-    // function animate() {
-    //   camera.position.x += (mouseX - camera.position.x) * 0.05;
-    //   camera.position.y += (-mouseY - camera.position.y) * 0.5;
-    //   camera.lookAt(scene.position);
-    //   uniforms.u_time.value = clock.getElapsedTime();
-    //   uniforms.u_frequency.value = audioAnalyser.getAverageFrequency();
-    //   bloomComposer.render();
-    //   requestAnimationFrame(animate);
-    // }
-    // animate();
-
-    // const handleResize = () => {
-    //   camera.aspect = window.innerWidth / window.innerHeight;
-    //   camera.updateProjectionMatrix();
-    //   renderer.setSize(window.innerWidth, window.innerHeight);
-    //   bloomComposer.setSize(window.innerWidth, window.innerHeight);
-    // };
-
-    // V1
     function animate() {
-      uniforms.u_frequency.value = audioAnalyser.getAverageFrequency();
+      const avgFrequencency = audioAnalyser.getAverageFrequency();
 
+      uniforms.u_frequency.value = avgFrequencency <= 21 ? 20 : avgFrequencency * 1.2;
       uniforms.u_time.value = clock.getElapsedTime();
       renderer.render(scene, camera);
     }
@@ -159,6 +139,7 @@ export function AudioResponderV2(): ReactElement {
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
     };
+
     window.addEventListener('resize', handleResize);
 
     return () => {
@@ -166,6 +147,13 @@ export function AudioResponderV2(): ReactElement {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
+
+  useEffect(() => {
+    if (!buffer || !soundRef.current) return;
+
+    soundRef.current.setBuffer(buffer);
+    soundRef.current.play();
+  }, [buffer]);
 
   return <div ref={mountRef} className="w-full flex-grow" />;
 }

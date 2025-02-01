@@ -1,10 +1,10 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 export type UseAudioStreamReturn = {
   audioContext: AudioContext;
-  analyserNode: AnalyserNode;
+  buffer?: AudioBuffer;
   streamAudio: (stream: ReadableStream<Uint8Array<ArrayBufferLike>>) => Promise<void>;
 };
 
@@ -13,6 +13,7 @@ export function useAudioStream(): UseAudioStreamReturn {
     new (window?.AudioContext || window?.webkitAudioContext)(),
   );
   const analyserNode = useRef<AnalyserNode>(audioContext.current!.createAnalyser());
+  const [buffer, setBuffer] = useState<AudioBuffer | undefined>();
 
   const streamAudio = async (
     stream: ReadableStream<Uint8Array<ArrayBufferLike>>,
@@ -27,6 +28,8 @@ export function useAudioStream(): UseAudioStreamReturn {
       console.error('No reader');
       return;
     }
+
+    setBuffer(undefined);
 
     // Read the stream into chunks
     const streamChunks: Uint8Array[] = [];
@@ -56,17 +59,13 @@ export function useAudioStream(): UseAudioStreamReturn {
     // Decode the audio data
     try {
       const audioBuffer = await audioContext.current.decodeAudioData(combinedChunks.buffer);
-      const source = audioContext.current.createBufferSource();
+      //   const source = audioContext.current.createBufferSource();
 
-      source.buffer = audioBuffer;
-      source.connect(analyserNode.current);
-      analyserNode.current.connect(audioContext.current.destination);
-
-      source.start(0);
+      setBuffer(audioBuffer);
     } catch (error) {
       console.error('Error decoding audio data:', error);
     }
   };
 
-  return { analyserNode: analyserNode.current, audioContext: audioContext.current, streamAudio };
+  return { audioContext: audioContext.current, buffer, streamAudio };
 }
