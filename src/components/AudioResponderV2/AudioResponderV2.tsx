@@ -1,5 +1,6 @@
 'use client';
 
+import { GUI } from 'lil-gui';
 import { ReactElement, useEffect, useRef } from 'react';
 import {
   Audio,
@@ -45,11 +46,20 @@ export function AudioResponderV2(): ReactElement {
 
     const renderScene = new RenderPass(scene, camera);
 
+    const params = {
+      red: 1.0,
+      green: 1.0,
+      blue: 1.0,
+      threshold: 0.5,
+      strength: 0.4,
+      radius: 0.8,
+    };
+
     const bloomPass = new UnrealBloomPass(
       new Vector2(window.innerWidth, window.innerHeight),
-      0.5,
-      0.8,
-      0.5,
+      params.strength,
+      params.radius,
+      params.threshold,
     );
 
     const bloomComposer = new EffectComposer(renderer);
@@ -102,6 +112,19 @@ export function AudioResponderV2(): ReactElement {
     orbit.enableZoom = true;
 
     const clock = new Clock();
+
+    const gui = new GUI();
+
+    const colorsFolder = gui.addFolder('Colors');
+    colorsFolder.add(params, 'red', 0, 1).onChange((value: string) => {
+      uniforms.u_red.value = Number(value);
+    });
+    colorsFolder.add(params, 'green', 0, 1).onChange((value: string) => {
+      uniforms.u_green.value = Number(value);
+    });
+    colorsFolder.add(params, 'blue', 0, 1).onChange((value: string) => {
+      uniforms.u_blue.value = Number(value);
+    });
 
     // function animate() {
     //   camera.position.x += (mouseX - camera.position.x) * 0.05;
