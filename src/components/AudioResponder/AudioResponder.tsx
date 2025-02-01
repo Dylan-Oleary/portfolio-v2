@@ -5,7 +5,8 @@ import { ReactElement } from 'react';
 import { useAudioStream } from '~/hooks';
 
 import { AudioResponderV2 } from '../AudioResponderV2';
-import { TextToSpeechForm } from '../TextToSpeechForm';
+
+// import { TextToSpeechForm } from '../TextToSpeechForm';
 
 export function AudioResponder(): ReactElement {
   const { streamAudio } = useAudioStream();
@@ -27,9 +28,9 @@ export function AudioResponder(): ReactElement {
   return (
     <div className="flex flex-col flex-grow">
       <AudioResponderV2 />
-      <div className="mt-auto">
+      {/* <div>
         <TextToSpeechForm onSubmit={onFormSubmit} />
-      </div>
+      </div> */}
     </div>
   );
 }
