@@ -30,7 +30,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <main className="flex flex-col flex-grow font-[family-name:var(--font-geist-sans)] items-center justify-center min-h-screen w-full">
+        <main className="flex flex-col flex-grow font-[family-name:var(--font-geist-sans)] items-center justify-between min-h-screen relative w-full">
           <h1 className="p-2 text-lg font-bold w-full">dylanoleary.dev</h1>
           <ChatProvider sessionId={sessionId}>{children}</ChatProvider>
         </main>

@@ -1,6 +1,6 @@
 'use client';
 
-import { PropsWithChildren, createContext, use } from 'react';
+import { PropsWithChildren, createContext, use, useState } from 'react';
 
 import { AudioVisualizer, ChatForm } from '~/components';
 import { useAudioStream } from '~/hooks';
@@ -8,8 +8,6 @@ import { useAudioStream } from '~/hooks';
 export type ChatProviderProps = PropsWithChildren<{ sessionId: string }>;
 
 export type ChatContext = {
-  onSendMessage: ({ question }: { question: string }) => void;
-  responseAudio: AudioBuffer | undefined;
   sessionId: string;
 };
 
@@ -17,8 +15,11 @@ export const Context = createContext<ChatContext>({} as ChatContext);
 
 export function ChatProvider({ children, sessionId }: ChatProviderProps) {
   const { audioBuffer, handleAudioStream } = useAudioStream();
+  const [isGeneratingResponse, setIsGeneratingResponse] = useState<boolean>(false);
 
   const onSendMessage = async ({ question }: { question: string }) => {
+    setIsGeneratingResponse(true);
+
     const response = await fetch('/api/tts', {
       body: JSON.stringify({ question }),
       method: 'POST',
@@ -30,14 +31,29 @@ export function ChatProvider({ children, sessionId }: ChatProviderProps) {
       return;
     }
 
-    handleAudioStream(response.body!);
+    try {
+      handleAudioStream(response.body!);
+    } catch (error) {
+      //TODO: Handle
+      console.error(error);
+    } finally {
+      setIsGeneratingResponse(false);
+    }
   };
 
   return (
-    <Context value={{ onSendMessage, responseAudio: audioBuffer, sessionId }}>
-      <AudioVisualizer buffer={audioBuffer} />
+    <Context value={{ sessionId }}>
+      <AudioVisualizer
+        buffer={audioBuffer}
+        className="absolute top-0 left-0 right-0"
+        contract={isGeneratingResponse}
+      />
       {children}
-      <ChatForm onSubmit={onSendMessage} />
+      <ChatForm
+        className="fixed bottom-0"
+        disabled={isGeneratingResponse}
+        onSubmit={onSendMessage}
+      />
     </Context>
   );
 }

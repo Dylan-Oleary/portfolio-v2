@@ -26,11 +26,18 @@ import { FRAGMENT_SHADER, VERTEX_SHADER } from './shaders';
 
 export type AudioVisualizerProps = {
   buffer?: AudioBuffer;
+  className?: string;
+  contract?: boolean;
 };
 
-export function AudioVisualizer({ buffer }: AudioVisualizerProps): ReactElement {
+export function AudioVisualizer({
+  buffer,
+  className,
+  contract,
+}: AudioVisualizerProps): ReactElement {
   const mountRef = useRef<HTMLDivElement>(null);
   const soundRef = useRef<Audio>(null);
+  const contractedRef = useRef<boolean>(contract);
 
   useEffect(() => {
     if (!window) return;
@@ -38,13 +45,14 @@ export function AudioVisualizer({ buffer }: AudioVisualizerProps): ReactElement 
     const root = mountRef.current;
     if (!root) return;
 
-    const height = window.innerHeight;
-    const width = window.innerWidth;
+    const height = window.innerHeight * 0.8;
+    const width = window.innerWidth * 0.8;
 
     const renderer = new WebGLRenderer({ antialias: true });
     renderer.setSize(width, height);
-    renderer.setClearColor('#0a0a0a');
+    renderer.setClearColor('#0a0a0a', 0);
     renderer.outputColorSpace = SRGBColorSpace;
+    renderer.domElement.className = 'mx-auto';
     root.appendChild(renderer.domElement);
 
     const scene = new Scene();
@@ -93,11 +101,24 @@ export function AudioVisualizer({ buffer }: AudioVisualizerProps): ReactElement 
     if (enableDevTools) _renderDeveloperTools(uniforms);
 
     function animate() {
+      const isContracted = contractedRef.current;
+
+      if (isContracted) {
+        if (isContracted) {
+          mesh.rotation.y += 0.05;
+          mesh.rotation.z += 0.02;
+        }
+      } else {
+        mesh.rotation.y = 0;
+        mesh.rotation.z = 0;
+      }
+
       if (!enableDevTools) {
         const isSoundPlaying = soundRef.current?.isPlaying;
 
-        uniforms.u_red.value = isSoundPlaying ? 0 : 1;
-        uniforms.u_blue.value = isSoundPlaying ? 0 : 1;
+        uniforms.u_red.value = isContracted ? 0 : isSoundPlaying ? 0 : 1;
+        uniforms.u_green.value = isContracted ? 0.7 : isSoundPlaying ? 1 : 1;
+        uniforms.u_blue.value = isContracted ? 1 : isSoundPlaying ? 0 : 1;
       }
 
       const averageFrequency = audioAnalyser.getAverageFrequency();
@@ -135,5 +156,9 @@ export function AudioVisualizer({ buffer }: AudioVisualizerProps): ReactElement 
     soundRef.current.play();
   }, [buffer]);
 
-  return <div ref={mountRef} className="w-full" />;
+  useEffect(() => {
+    contractedRef.current = contract;
+  }, [contract]);
+
+  return <div ref={mountRef} className={`w-full ${className}`} />;
 }
