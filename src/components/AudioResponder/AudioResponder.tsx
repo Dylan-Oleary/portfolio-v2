@@ -8,7 +8,7 @@ import { AudioVisualizer } from '../AudioVisualizer';
 import { TextToSpeechForm } from '../TextToSpeechForm';
 
 export function AudioResponder(): ReactElement {
-  const { analyserNode, streamAudio } = useAudioStream();
+  const { audioBuffer, handleAudioStream } = useAudioStream();
 
   const onFormSubmit = async (question: string) => {
     const response = await fetch('/api/tts', {
@@ -21,15 +21,13 @@ export function AudioResponder(): ReactElement {
       return;
     }
 
-    streamAudio(response.body!);
+    handleAudioStream(response.body!);
   };
 
   return (
     <div className="flex flex-col flex-grow">
-      <div className="p-4">
-        <AudioVisualizer analyserNode={analyserNode} />
-      </div>
-      <div className="mt-auto">
+      <AudioVisualizer buffer={audioBuffer} />
+      <div>
         <TextToSpeechForm onSubmit={onFormSubmit} />
       </div>
     </div>

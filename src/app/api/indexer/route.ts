@@ -22,3 +22,14 @@ export async function GET() {
 
   return NextResponse.json({ texts });
 }
+
+export async function PATCH() {
+  const vectorStore = await getPineconeVectorStore({
+    embeddings: new OpenAIEmbeddings({ model: 'text-embedding-3-large' }),
+    indexName: process.env.PINECONE_INDEX!,
+  });
+
+  await vectorStore.pineconeIndex.deleteAll();
+
+  return NextResponse.json({ status: 'ok' });
+}
