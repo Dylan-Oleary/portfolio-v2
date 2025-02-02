@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 
+import { ChatProvider } from '~/context';
+
 import './globals.css';
 
 const geistSans = Geist({
@@ -23,9 +25,16 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const sessionId = crypto.randomUUID();
+
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>{children}</body>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <main className="flex flex-col flex-grow font-[family-name:var(--font-geist-sans)] items-center justify-center min-h-screen w-full">
+          <h1 className="p-2 text-lg font-bold w-full">dylanoleary.dev</h1>
+          <ChatProvider sessionId={sessionId}>{children}</ChatProvider>
+        </main>
+      </body>
     </html>
   );
 }

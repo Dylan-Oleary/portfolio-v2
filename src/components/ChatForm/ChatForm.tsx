@@ -2,11 +2,9 @@
 
 import { type FormEvent, useState } from 'react';
 
-export type TextToSpeechFormProps = {
-  onSubmit: (value: string) => void;
-};
+export type ChatFormProps = { className?: string; onSubmit(data: { question: string }): void };
 
-export function TextToSpeechForm(props: TextToSpeechFormProps) {
+export function ChatForm({ className = '', onSubmit }: ChatFormProps) {
   const [question, setQuestion] = useState<string>('');
 
   const onFormSubmit = async (event: FormEvent) => {
@@ -14,15 +12,15 @@ export function TextToSpeechForm(props: TextToSpeechFormProps) {
     event?.stopPropagation();
 
     setQuestion('');
-    props.onSubmit(question);
+    onSubmit({ question });
   };
 
   return (
-    <form className="w-[450px] mt-8" onSubmit={onFormSubmit}>
+    <form className={`w-[450px] mt-8 ${className}`} onSubmit={onFormSubmit}>
       <input
         className="text-black p-4 w-full"
         name="question"
-        onChange={(event) => setQuestion(event.target.value)}
+        onChange={({ target: { value } }) => setQuestion(value)}
         type="text"
         value={question}
       />
