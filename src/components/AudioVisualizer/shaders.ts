@@ -1,11 +1,4 @@
-/**
- * Fragment shader code for the AudioResponderV2 component.
- *
- * This shader sets the fragment color to white with full opacity.
- *
- * @constant {string} fragmentShader - The GLSL code for the fragment shader.
- */
-export const fragmentShader = `
+export const FRAGMENT_SHADER = `
   uniform float u_red;
   uniform float u_blue;
   uniform float u_green;
@@ -15,31 +8,7 @@ export const fragmentShader = `
   }
 `;
 
-/**
- * Vertex shader code for generating procedural noise and applying it to vertex positions.
- *
- * This shader uses Perlin noise to displace vertex positions, creating a more organic and dynamic surface.
- *
- * Functions:
- * - `mod289`: Computes the modulus of a vector with 289.
- * - `permute`: Permutes a vector using a specific mathematical formula.
- * - `taylorInvSqrt`: Computes an approximation of the inverse square root.
- * - `fade`: Smooths the input value for interpolation.
- * - `pnoise`: Generates periodic Perlin noise based on the input position and repetition vector.
- *
- * Main Function:
- * - `main`: Computes the noise value for the current vertex position, applies a displacement based on the noise,
- *   and sets the final position of the vertex.
- *
- * Variables:
- * - `position`: The original position of the vertex.
- * - `normal`: The normal vector at the vertex.
- * - `projectionMatrix`: The projection matrix.
- * - `modelViewMatrix`: The model-view matrix.
- *
- * @returns {void}
- */
-export const vertexShader = `
+export const VERTEX_SHADER = `
   vec3 mod289(vec3 x) {
     return x - floor(x * (1.0 / 289.0)) * 289.0;
   }
