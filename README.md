@@ -2,9 +2,9 @@
 
 Hola, weary traveller!
 
-It seems you've stumbled upon the second iteration of my portfolio. I launched my first portfolio back in 2019 and since then have been trying to mastermy craft.
+It seems you've stumbled upon the second iteration of my portfolio. I launched my first portfolio back in 2019 and since then have been trying to master my craft.
 
-What I'm currently building here is hopefully a mosaic of all that I've learned since then (with a some easter eggs stuffed in – no doubt).
+What I'm currently building here is hopefully a mosaic of all that I've learned since then (with some easter eggs stuffed in – no doubt).
 
 The elevator pitch for this portfolio is as follows: You interview me – right here and now from your browser!
 
@@ -16,8 +16,17 @@ The elevator pitch for this portfolio is as follows: You interview me – right
 pnpm install
 ```
 
-#### Start the appliction
+#### Start the application
 
 ```
 pnpm dev
 ```
+
+#### Technology
+
+Here's what I'm using to leave my mark on the web.
+
+[Next.js](https://nextjs.org/)
+[Three.js](https://threejs.org/)
+[ElevenLabs](https://elevenlabs.io/)
+[Pinecone](https://www.pinecone.io/)
