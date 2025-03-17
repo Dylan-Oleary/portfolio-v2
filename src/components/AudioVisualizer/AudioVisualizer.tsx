@@ -33,7 +33,7 @@ export function AudioVisualizer({ buffer }: AudioVisualizerProps): ReactElement 
   const soundRef = useRef<Audio>(null);
 
   useEffect(() => {
-    if (!window) return;
+    if (typeof window === 'undefined') return;
 
     const root = mountRef.current;
     if (!root) return;

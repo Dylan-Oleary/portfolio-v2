@@ -10,15 +10,17 @@ export type UseAudioStreamReturn = {
 
 export function useAudioStream(): UseAudioStreamReturn {
   const audioContext = useRef<AudioContext>(
-    new (window?.AudioContext || window?.webkitAudioContext)(),
+    typeof window === 'undefined'
+      ? null
+      : new (window?.AudioContext || window?.webkitAudioContext)(),
   );
-  const analyserNode = useRef<AnalyserNode>(audioContext.current!.createAnalyser());
+  const analyserNode = useRef<AnalyserNode>(audioContext.current?.createAnalyser() ?? null);
   const [audioBuffer, setAudioBuffer] = useState<AudioBuffer>();
 
   const handleAudioStream = async (
     stream: ReadableStream<Uint8Array<ArrayBufferLike>>,
   ): Promise<void> => {
-    if (!audioContext.current) return;
+    if (!audioContext.current || !analyserNode.current) return;
     setAudioBuffer(undefined);
 
     analyserNode.current.fftSize = 2048;
@@ -65,5 +67,5 @@ export function useAudioStream(): UseAudioStreamReturn {
     }
   };
 
-  return { audioBuffer, audioContext: audioContext.current, handleAudioStream };
+  return { audioBuffer, audioContext: audioContext.current!, handleAudioStream };
 }
